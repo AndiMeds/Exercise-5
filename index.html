@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: 'Varela Round', sans-serif;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            background-color: #f5f9fc; 
+        }
+
+        form {
+            max-width: 400px; 
+            width: 100%; 
+            padding: 20px; 
+            background-color: white; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px; 
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            color: green;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="registrationForm">
+        <h2>Registration Form</h2>
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+            <span class="error" id="firstNameError"></span>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+            <span class="error" id="lastNameError"></span>
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <span class="error" id="usernameError"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <span class="error" id="emailError"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <span class="error" id="passwordError"></span>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+    <div id="result"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#registrationForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                $('#firstNameError').text('');
+                $('#lastNameError').text('');
+                $('#usernameError').text('');
+                $('#emailError').text('');
+                $('#passwordError').text('');
+                $('#result').text('');
+
+                // AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: 'register.php', // Your PHP file path
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#result').text('Registration successful!');
+                        } else {
+                            // Show errors based on response
+                            if (response.error.includes('Email')) {
+                                $('#emailError').text(response.error);
+                            } else if (response.error.includes('Username')) {
+                                $('#usernameError').text(response.error);
+                            } else {
+                                $('#result').text(response.error);
+                            }
+                        }
+                    },
+                    error: function () {
+                        $('#result').text('Error in submitting the form.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
